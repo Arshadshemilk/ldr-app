@@ -46,4 +46,12 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    username = st.text_input('Username')
+    password = st.text_input('Password')
+    st.form_submit_button('Login')
+    if username == 'j':
+      run()
+    elif username == 'adam@foocorp.io':
+      display_adam()
+    else:
+      st.write("Please contact us to get access!")
