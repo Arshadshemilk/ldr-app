@@ -30,18 +30,9 @@ def mapping_demo():
         )
         return pd.read_json(url)
 
-    """try:
+    try:
         ALL_LAYERS = {
-            "Bike Rentals": pdk.Layer(
-                "HexagonLayer",
-                data=from_data_file("bike_rental_stats.json"),
-                get_position=["lon", "lat"],
-                radius=200,
-                elevation_scale=4,
-                elevation_range=[0, 1000],
-                extruded=True,
-            ),
-            "Bart Stop Exits": pdk.Layer(
+            "Points": pdk.Layer(
                 "ScatterplotLayer",
                 data=from_data_file("bart_stop_stats.json"),
                 get_position=["lon", "lat"],
@@ -49,16 +40,7 @@ def mapping_demo():
                 get_radius="[exits]",
                 radius_scale=0.05,
             ),
-            "Bart Stop Names": pdk.Layer(
-                "TextLayer",
-                data=from_data_file("bart_stop_stats.json"),
-                get_position=["lon", "lat"],
-                get_text="name",
-                get_color=[0, 0, 0, 200],
-                get_size=10,
-                get_alignment_baseline="'bottom'",
-            ),
-            "Outbound Flow": pdk.Layer(
+            "Track": pdk.Layer(
                 "ArcLayer",
                 data=from_data_file("bart_path_stats.json"),
                 get_source_position=["lon", "lat"],
@@ -95,10 +77,12 @@ def mapping_demo():
             st.error("Please choose at least one layer above.")
     except URLError as e:
         st.error(
+            """
             **This demo requires internet access.**
             Connection error: %s
+        """
             % e.reason
-        )"""
+        )
 
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
@@ -115,5 +99,6 @@ st.pydeck_chart(
                         "zoom": 11,
                         "pitch": 50,
                     },
+                    layers=selected_layers,
                 )
             )
