@@ -30,7 +30,7 @@ def mapping_demo():
         )
         return pd.read_json(url)
 
-    try:
+    """try:
         ALL_LAYERS = {
             "Bike Rentals": pdk.Layer(
                 "HexagonLayer",
@@ -95,12 +95,10 @@ def mapping_demo():
             st.error("Please choose at least one layer above.")
     except URLError as e:
         st.error(
-            """
             **This demo requires internet access.**
             Connection error: %s
-        """
             % e.reason
-        )
+        )"""
 
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
@@ -108,4 +106,14 @@ st.markdown("# Mapping")
 st.sidebar.header("Mapping")
 
 mapping_demo()
-
+st.pydeck_chart(
+                pdk.Deck(
+                    map_style=None,
+                    initial_view_state={
+                        "latitude": 10.068393,
+                        "longitude": 76.593363,
+                        "zoom": 11,
+                        "pitch": 50,
+                    },
+                )
+            )
