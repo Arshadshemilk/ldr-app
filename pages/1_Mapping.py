@@ -90,15 +90,3 @@ st.markdown("# Mapping")
 st.sidebar.header("Mapping")
 
 mapping_demo()
-st.pydeck_chart(
-                pdk.Deck(
-                    map_style=None,
-                    initial_view_state={
-                        "latitude": 10.068393,
-                        "longitude": 76.593363,
-                        "zoom": 11,
-                        "pitch": 50,
-                    },
-                    layers=selected_layers,
-                )
-            )
