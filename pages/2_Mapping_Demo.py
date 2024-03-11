@@ -83,8 +83,8 @@ def mapping_demo():
                 pdk.Deck(
                     map_style=None,
                     initial_view_state={
-                        "latitude": 37.76,
-                        "longitude": -122.4,
+                        "latitude": 10.068393,
+                        "longitude": 76.593363,
                         "zoom": 11,
                         "pitch": 50,
                     },
@@ -103,15 +103,9 @@ def mapping_demo():
         )
 
 
-st.set_page_config(page_title="Mapping Demo", page_icon="🌍")
-st.markdown("# Mapping Demo")
-st.sidebar.header("Mapping Demo")
-st.write(
-    """This demo shows how to use
-[`st.pydeck_chart`](https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart)
-to display geospatial data."""
-)
+st.set_page_config(page_title="Mapping", page_icon="🌍")
+st.markdown("# Mapping")
+st.sidebar.header("Mapping")
 
 mapping_demo()
 
-show_code(mapping_demo)
