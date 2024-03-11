@@ -53,7 +53,12 @@ def mapping_demo():
                 width_min_pixels=3,
                 width_max_pixels=30,
             ),
-        }
+         }
+        mapstyle=st.sidebar.selectbox(
+            "Choose Map Style:",
+            options=["light","dark","satellite","road"],
+            format_func=str.capitalize,
+        )
         st.sidebar.markdown("### Map Layers")
         selected_layers = [
             layer
@@ -63,7 +68,7 @@ def mapping_demo():
         if selected_layers:
             st.pydeck_chart(
                 pdk.Deck(
-                    map_style=None,
+                    map_style=f"{mapstyle}",
                     initial_view_state={
                         "latitude": 10.068393,
                         "longitude": 76.593363,
