@@ -46,7 +46,7 @@ def mapping_demo():
          }
         mapstyle=st.sidebar.selectbox(
             "Choose Map Style:",
-            options=["light","dark","satellite","road"],
+            options=["dark","light","road"],
             format_func=str.capitalize,
         )
         st.sidebar.markdown("### Map Layers")
@@ -73,7 +73,7 @@ def mapping_demo():
     except URLError as e:
         st.error(
             """
-            **This demo requires internet access.**
+            **This requires internet access.**
             Connection error: %s
         """
             % e.reason
