@@ -24,13 +24,16 @@ from streamlit.hello.utils import show_code
 def mapping_demo():
     @st.cache_data
     def from_data_file(filename):
-        return pd.read_json(filename)
+        url = (
+            "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
+        )
+        return pd.read_json(url)
 
     try:
         ALL_LAYERS = {
             "Points": pdk.Layer(
                 "ScatterplotLayer",
-                data=from_data_file("/workspaces/ldr-app/data/gps_temp.json"),
+                data=from_data_file("gps_temp.json"),
                 get_position=["lon", "lat"],
                 get_color=[200, 30, 0, 160],
                 get_radius="[exits]",
