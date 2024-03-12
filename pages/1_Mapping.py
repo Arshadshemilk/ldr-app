@@ -13,9 +13,11 @@
 # limitations under the License.
 
 from urllib.error import URLError
+import numpy as np
 
 import pandas as pd
 import pydeck as pdk
+import json
 
 import streamlit as st
 from streamlit.hello.utils import show_code
@@ -27,7 +29,9 @@ def mapping_demo():
         url = (
             "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
         )
-        return pd.read_json(url)
+        data=pd.read_json(url)
+        filtered_data = data[data['temp'] < 30]
+        return filtered_data
 
     try:
         ALL_LAYERS = {
