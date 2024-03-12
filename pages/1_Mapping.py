@@ -24,34 +24,17 @@ from streamlit.hello.utils import show_code
 def mapping_demo():
     @st.cache_data
     def from_data_file(filename):
-        url = (
-            "https://raw.githubusercontent.com/streamlit/"
-            "example-data/master/hello/v1/%s" % filename
-        )
-        return pd.read_json(url)
+        return pd.read_json(filename)
 
     try:
         ALL_LAYERS = {
             "Points": pdk.Layer(
                 "ScatterplotLayer",
-                data=from_data_file("bart_stop_stats.json"),
+                data=from_data_file("/workspaces/ldr-app/data/gps_temp.json"),
                 get_position=["lon", "lat"],
                 get_color=[200, 30, 0, 160],
                 get_radius="[exits]",
-                radius_scale=0.05,
-            ),
-            "Track": pdk.Layer(
-                "ArcLayer",
-                data=from_data_file("bart_path_stats.json"),
-                get_source_position=["lon", "lat"],
-                get_target_position=["lon2", "lat2"],
-                get_source_color=[200, 30, 0, 160],
-                get_target_color=[200, 30, 0, 160],
-                auto_highlight=True,
-                width_scale=0.0001,
-                get_width="outbound",
-                width_min_pixels=3,
-                width_max_pixels=30,
+                radius_scale=13,
             ),
          }
         mapstyle=st.sidebar.selectbox(
@@ -72,7 +55,7 @@ def mapping_demo():
                     initial_view_state={
                         "latitude": 10.068393,
                         "longitude": 76.593363,
-                        "zoom": 11,
+                        "zoom": 15,
                         "pitch": 50,
                     },
                     layers=selected_layers,
