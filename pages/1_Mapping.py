@@ -81,7 +81,70 @@ def mapping_demo():
             Connection error: %s
         """
             % e.reason
+        )def mapping_demo():
+    @st.cache_data
+    def from_data_file(filename):
+        url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
+        data = pd.read_json(url)
+        filtered_data = data[data['temp'] < 30]
+        return filtered_data
+
+    try:
+        while True:
+            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json")
+            if json_content:
+                st.sidebar.info("Checking for changes in JSON file...")
+
+                filtered_data = pd.DataFrame(json_content)
+                filtered_data = filtered_data[filtered_data['temp'] < 30]
+
+                ALL_LAYERS = {
+                    "Points": pdk.Layer(
+                        "ScatterplotLayer",
+                        data=filtered_data,
+                        get_position=["lon", "lat"],
+                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
+                        get_radius=50,
+                    ),
+                }
+
+                mapstyle=st.sidebar.selectbox(
+                    "Choose Map Style:",
+                    options=["dark","light","road"],
+                    format_func=str.capitalize,
+                    key="mapstyle_selectbox" + str(np.random.randint(1000))  # Add a unique key
+                )
+                st.sidebar.markdown("### Map Layers")
+                selected_layers = [
+                    layer
+                    for layer_name, layer in ALL_LAYERS.items()
+                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox" + str(np.random.randint(1000)))  # Add a unique key
+                ]
+                if selected_layers:
+                    st.pydeck_chart(
+                        pdk.Deck(
+                            map_style=f"{mapstyle}",
+                            initial_view_state={
+                                "latitude": 10.068393,
+                                "longitude": 76.593363,
+                                "zoom": 15,
+                                "pitch": 50,
+                            },
+                            layers=selected_layers,
+                        )
+                    )
+                else:
+                    st.error("Please choose at least one layer above.")
+                time.sleep(60)  # Check for changes every 60 seconds
+    except URLError as e:
+        st.error(
+            """
+            **This requires internet access.**
+            Connection error: %s
+        """
+            % e.reason
         )
+
 
 
 
