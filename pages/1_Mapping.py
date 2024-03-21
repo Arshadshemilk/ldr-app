@@ -50,7 +50,7 @@ def mapping_demo():
                     "Choose Map Style:",
                     options=["dark","light","road"],
                     format_func=str.capitalize,
-                    key="mapstyle_selectbox"  # Add a unique key
+                    key="mapstyle_selectbox" + str(np.random.randint(1000))  # Add a unique key
                 )
                 st.sidebar.markdown("### Map Layers")
                 selected_layers = [
@@ -82,6 +82,7 @@ def mapping_demo():
         """
             % e.reason
         )
+
 
 
 
