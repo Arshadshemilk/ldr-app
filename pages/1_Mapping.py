@@ -27,12 +27,20 @@ def mapping_demo():
         filtered_data = data[data['temp'] < 30]
         return filtered_data
 
+    st.sidebar.info("Checking for changes in JSON file...")
+
+    mapstyle=st.sidebar.selectbox(
+        "Choose Map Style:",
+        options=["dark","light","road"],
+        format_func=str.capitalize,
+        key="mapstyle_selectbox"
+    )
+    st.sidebar.markdown("### Map Layers")
+    
     try:
         while True:
             json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json")
             if json_content:
-                st.sidebar.info("Checking for changes in JSON file...")
-
                 filtered_data = pd.DataFrame(json_content)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
 
@@ -46,17 +54,10 @@ def mapping_demo():
                     ),
                 }
 
-                mapstyle=st.sidebar.selectbox(
-                    "Choose Map Style:",
-                    options=["dark","light","road"],
-                    format_func=str.capitalize,
-                    key="mapstyle_selectbox" + str(np.random.randint(1000))  # Add a unique key
-                )
-                st.sidebar.markdown("### Map Layers")
                 selected_layers = [
                     layer
                     for layer_name, layer in ALL_LAYERS.items()
-                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox" + str(np.random.randint(1000)))  # Add a unique key
+                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")
                 ]
                 if selected_layers:
                     st.pydeck_chart(
@@ -73,7 +74,7 @@ def mapping_demo():
                     )
                 else:
                     st.error("Please choose at least one layer above.")
-                time.sleep(60)  # Check for changes every 60 seconds
+            time.sleep(60)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
@@ -82,6 +83,7 @@ def mapping_demo():
         """
             % e.reason
         )
+
 
 
 
