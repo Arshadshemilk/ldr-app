@@ -31,7 +31,8 @@ def mapping_demo():
         while True:
             json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json")
             if json_content:
-                st.sidebar.info("Detected changes in JSON file. Updating...")
+                st.sidebar.info("Checking for changes in JSON file...")
+
                 filtered_data = pd.DataFrame(json_content)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
 
@@ -40,7 +41,7 @@ def mapping_demo():
                         "ScatterplotLayer",
                         data=filtered_data,
                         get_position=["lon", "lat"],
-                        get_color=[255, 0, 0],  # Set color to red
+                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
                         get_radius=50,
                     ),
                 }
@@ -49,12 +50,13 @@ def mapping_demo():
                     "Choose Map Style:",
                     options=["dark","light","road"],
                     format_func=str.capitalize,
+                    key="mapstyle_selectbox"  # Add a unique key
                 )
                 st.sidebar.markdown("### Map Layers")
                 selected_layers = [
                     layer
                     for layer_name, layer in ALL_LAYERS.items()
-                    if st.sidebar.checkbox(layer_name, True)
+                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")  # Add a unique key
                 ]
                 if selected_layers:
                     st.pydeck_chart(
@@ -71,7 +73,7 @@ def mapping_demo():
                     )
                 else:
                     st.error("Please choose at least one layer above.")
-                time.sleep(10)  # Check for changes every 60 seconds
+                time.sleep(60)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
@@ -80,6 +82,7 @@ def mapping_demo():
         """
             % e.reason
         )
+
 
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
