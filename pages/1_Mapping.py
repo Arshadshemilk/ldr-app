@@ -20,7 +20,6 @@ def fetch_json_from_github(url):
         return None
 
 def mapping_demo():
-    @st.cache_data
     def from_data_file(filename):
         url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
         data = pd.read_json(url)
