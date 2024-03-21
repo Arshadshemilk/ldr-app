@@ -65,7 +65,7 @@ def mapping_demo():
                 else:
                     map_container.error("Please choose at least one layer above.")
                 
-            time.sleep(60)  # Check for changes every 60 seconds
+            time.sleep(10)  # Check for changes every 60 seconds
 
     except requests.exceptions.RequestException as e:
         st.error(f"Error: {e}")
