@@ -20,6 +20,7 @@ def fetch_json_from_github(url):
         return None
 
 def mapping_demo():
+    @st.cache(allow_output_mutation=True)
     def from_data_file(filename):
         url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
         data = pd.read_json(url)
@@ -43,14 +44,14 @@ def mapping_demo():
         "Choose Map Style:",
         options=["dark", "light", "road"],
         format_func=str.capitalize,
-        key="mapstyle_selectbox" + str(np.random.randint(1000)) # Add a unique key
+        key="mapstyle_selectbox" + str(np.random.randint(1000))  # Add a unique key
     )
 
     st.sidebar.markdown("### Map Layers")
     selected_layers = [
         layer
         for layer_name, layer in ALL_LAYERS.items()
-        if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox" + str(np.random.randint(1000)))  # Add a unique key
+        if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox") + str(np.random.randint(1000))  # Add a unique key
     ]
     if selected_layers:
         map_component = st.pydeck_chart(
@@ -78,7 +79,7 @@ def mapping_demo():
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
                 
-            time.sleep(10)  # Check for changes every 60 seconds
+            time.sleep(60)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
@@ -94,4 +95,5 @@ st.markdown("# Mapping")
 st.sidebar.header("Mapping")
 
 mapping_demo()
+
 
