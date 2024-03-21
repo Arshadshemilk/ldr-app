@@ -57,7 +57,7 @@ def mapping_demo():
                 selected_layers = [
                     layer
                     for layer_name, layer in ALL_LAYERS.items()
-                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")
+                    if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox" + str(np.random.randint(1000)))  # Add a unique key
                 ]
                 if selected_layers:
                     st.pydeck_chart(
