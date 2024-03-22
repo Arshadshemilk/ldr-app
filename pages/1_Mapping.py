@@ -81,6 +81,16 @@ def mapping_demo():
                 filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
                 ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records') if not filtered_data.empty else None
+                # Update the map component to reflect changes
+                map_component.deck_layers = [
+                    pdk.Layer(
+                        map_component.deck_layers[0].type,
+                        data=ALL_LAYERS["Points"].data,
+                        get_position=["lon", "lat"],
+                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
+                        get_radius=50,
+                    )
+                ]
             time.sleep(10)  # Increase interval
     except KeyboardInterrupt:
         st.error("Fetching interrupted by user.")
