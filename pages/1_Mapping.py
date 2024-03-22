@@ -80,7 +80,7 @@ def mapping_demo():
                 parsed_json = json.loads(json_content)
                 filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
-                ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records') if not filtered_data.empty else None
+                ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records')
                 # Update the map component to reflect changes
                 map_component.deck_layers = [
                     pdk.Layer(
