@@ -4,3 +4,5 @@ pandas
 pydeck
 streamlit
 folium
+streamlit_folium
+folium_plugins
