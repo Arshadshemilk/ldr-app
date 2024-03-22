@@ -1,4 +1,3 @@
-from urllib.error import URLError
 import requests
 import pandas as pd
 import pydeck as pdk
@@ -26,7 +25,6 @@ def fetch_github_json(repo_url, file_path, token):
     except (requests.RequestException, KeyError) as e:
         st.error(f"Failed to fetch JSON content from GitHub: {e}")
         return None
-
 
 def mapping_demo():
     st.sidebar.info("Checking for changes in JSON file...")
@@ -67,7 +65,7 @@ def mapping_demo():
                     "zoom": 15,
                     "pitch": 50,
                 },
-                layers=selected_layers,
+                layers=[layer for layer in ALL_LAYERS.values()],
             )
         )
     else:
@@ -82,7 +80,6 @@ def mapping_demo():
                 parsed_json = json.loads(json_content)
                 filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
-                st.write(filtered_data)
                 ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records') if not filtered_data.empty else None
             time.sleep(10)  # Increase interval
     except KeyboardInterrupt:
@@ -91,7 +88,6 @@ def mapping_demo():
         st.error(f"This requires internet access. Connection error: {e}")
     except Exception as e:
         st.error(f"An error occurred: {e}")
-
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
 st.markdown("# Mapping")
