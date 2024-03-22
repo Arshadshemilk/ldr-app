@@ -4,17 +4,26 @@ import pandas as pd
 import pydeck as pdk
 import streamlit as st
 import time
+import base64
+import json
 
-def fetch_json_from_github(url):
-    response = requests.get(url)
+def fetch_github_json(repo_url, file_path):
+    # Constructing the API URL to fetch content from GitHub
+    api_url = f"https://api.github.com/repos/{repo_url}/contents/{file_path}"
+    
+    # Sending GET request to GitHub API
+    response = requests.get(api_url)
+    
     if response.status_code == 200:
-        return response.json()
+        content = response.json()
+        # Decoding base64 content
+        decoded_content = base64.b64decode(content['content']).decode('utf-8')
+        return decoded_content
     else:
-        st.error("Failed to fetch JSON file from GitHub.")
+        st.error("Failed to fetch JSON content from GitHub.")
         return None
 
 def mapping_demo():
-    @st.cache_data
     def from_data_file(filename):
         url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
         data = pd.read_json(url)
@@ -65,15 +74,18 @@ def mapping_demo():
 
     try:
         while True:
-            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json")
+            repo_url = "Arshadshemilk/ldr-data"
+            file_path = "gps_temp.json"
+            json_content = fetch_github_json(repo_url,file_path)
             if json_content:
-                filtered_data = pd.DataFrame(json_content)
+                parsed_json = json.loads(json_content)
+                filtered_data = pd.DataFrame(parsed_content)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
                 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
                 
-            time.sleep(60)  # Check for changes every 60 seconds
+            time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
