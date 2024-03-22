@@ -74,6 +74,7 @@ def mapping_demo():
                 layers=selected_layers,
             )
         )
+        map_component.view()
 
     else:
         map_component = st.error("Please choose at least one layer above.")
