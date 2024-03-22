@@ -89,6 +89,15 @@ def mapping_demo():
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
+                map_component.deck_layers = [
+                    pdk.Layer(
+                        map_component.deck_layers[0].type,
+                        data=ALL_LAYERS["Points"].data,
+                        get_position=["lon", "lat"],
+                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
+                        get_radius=50,
+                    )
+                ]
 
             time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
