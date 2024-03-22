@@ -83,7 +83,7 @@ def mapping_demo():
             if json_content:
                 parsed_json = json.loads(json_content)
                 filtered_data = pd.DataFrame(parsed_json)
-                st.write(parsed_json)
+                st.write(filteres_data)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
 
                 # Update map data
