@@ -79,7 +79,7 @@ def mapping_demo():
             json_content = fetch_github_json(repo_url,file_path)
             if json_content:
                 parsed_json = json.loads(json_content)
-                filtered_data = pd.DataFrame(parsed_content)
+                filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
                 
                 # Update map data
