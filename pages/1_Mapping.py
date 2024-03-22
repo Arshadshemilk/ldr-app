@@ -37,7 +37,7 @@ def mapping_demo():
 
     try:
         while True:
-            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json?t=%s" % int(time.time()))
+            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json?token=$(date +%s)"
             st.write(json_content)
             if json_content:
                 filtered_data = pd.DataFrame(json_content)
