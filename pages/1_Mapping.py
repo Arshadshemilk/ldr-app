@@ -83,7 +83,7 @@ def mapping_demo():
                 filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
                 ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records') if not filtered_data.empty else None
-            time.sleep(60)  # Increase interval
+            time.sleep(10)  # Increase interval
     except KeyboardInterrupt:
         st.error("Fetching interrupted by user.")
     except URLError as e:
