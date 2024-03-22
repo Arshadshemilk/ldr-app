@@ -107,4 +107,5 @@ st.set_page_config(page_title="Mapping", page_icon="🌍")
 st.markdown("# Mapping")
 st.sidebar.header("Mapping")
 mapping_demo()
-mapObj = folium.Map(location=[10.068393,76.593363],zoom_start=5)
+map = folium.Map(location=[10.068393,76.593363],zoom_start=5)
+map
