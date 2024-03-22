@@ -83,12 +83,13 @@ def mapping_demo():
             if json_content:
                 parsed_json = json.loads(json_content)
                 filtered_data = pd.DataFrame(parsed_json)
+                st.write(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
 
-            time.sleep(10)  # Check for changes every 60 seconds
+            time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
