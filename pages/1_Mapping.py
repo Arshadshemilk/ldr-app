@@ -1,3 +1,4 @@
+from urllib.error import URLError
 import requests
 import pandas as pd
 import pydeck as pdk
