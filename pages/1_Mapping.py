@@ -6,6 +6,8 @@ import streamlit as st
 import time
 import base64
 import json
+import folium
+from folium.plugins import AntPath
 
 def fetch_github_json(repo_url, file_path, token):
     try:
@@ -105,3 +107,4 @@ st.set_page_config(page_title="Mapping", page_icon="🌍")
 st.markdown("# Mapping")
 st.sidebar.header("Mapping")
 mapping_demo()
+mapObj = folium.Map(location=[10.068393,76.593363],zoom_start=5)
