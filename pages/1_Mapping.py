@@ -28,33 +28,37 @@ def fetch_github_json(repo_url, file_path, token):
         return None
 
 def mapping_demo():
-    st.sidebar.info("Checking for changes in JSON file...")
-
-    # Add your personal access token here
     token = "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"
+    def from_data_file(filename):
+        url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
+        data = pd.read_json(url)
+        filtered_data = data[data['temp'] < 30]
+        return filtered_data
+
+    # Create map and checkboxes outside the loop
+    st.sidebar.info("Checking for changes in JSON file...")
 
     ALL_LAYERS = {
         "Points": pdk.Layer(
             "ScatterplotLayer",
-            data=None,
+            data=from_data_file("gps_temp.json"),  # Initially load the data
             get_position=["lon", "lat"],
-            get_color=[255, 0, 0, 160],
+            get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
             get_radius=50,
         ),
     }
-
     mapstyle = st.sidebar.selectbox(
         "Choose Map Style:",
         options=["dark", "light", "road"],
         format_func=str.capitalize,
-        key="mapstyle_selectbox"
+        key="mapstyle_selectbox"  # Add a unique key
     )
 
     st.sidebar.markdown("### Map Layers")
     selected_layers = [
         layer
         for layer_name, layer in ALL_LAYERS.items()
-        if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")
+        if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")  # Add a unique key
     ]
     if selected_layers:
         map_component = st.pydeck_chart(
@@ -66,42 +70,36 @@ def mapping_demo():
                     "zoom": 15,
                     "pitch": 50,
                 },
-                layers=[layer for layer in ALL_LAYERS.values()],
+                layers=selected_layers,
             )
         )
     else:
         map_component = st.error("Please choose at least one layer above.")
-
     try:
         while True:
             repo_url = "Arshadshemilk/ldr-data"
             file_path = "gps_temp.json"
-            json_content = fetch_github_json(repo_url, file_path, token)
+            json_content = fetch_github_json(repo_url, file_path,token)
             if json_content:
                 parsed_json = json.loads(json_content)
                 filtered_data = pd.DataFrame(parsed_json)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
-                ALL_LAYERS["Points"].data = filtered_data.to_dict(orient='records')
-                # Update the map component to reflect changes
-                map_component.deck_layers = [
-                    pdk.Layer(
-                        map_component.deck_layers[0].type,
-                        data=ALL_LAYERS["Points"].data,
-                        get_position=["lon", "lat"],
-                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
-                        get_radius=50,
-                    )
-                ]
-            time.sleep(10)  # Increase interval
-    except KeyboardInterrupt:
-        st.error("Fetching interrupted by user.")
+
+                # Update map data
+                ALL_LAYERS["Points"].data = filtered_data
+
+            time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
-        st.error(f"This requires internet access. Connection error: {e}")
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(
+            """
+            **This requires internet access.**
+            Connection error: %s
+        """
+            % e.reason
+        )
+
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
 st.markdown("# Mapping")
 st.sidebar.header("Mapping")
-
 mapping_demo()
