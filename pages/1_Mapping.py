@@ -14,11 +14,17 @@ def fetch_json_from_github(url):
         return None
 
 def mapping_demo():
+    # Create map and checkboxes outside the loop
     st.sidebar.info("Checking for changes in JSON file...")
-    
-    map_container = st.empty()
+
     ALL_LAYERS = {
-        "Points": None,
+        "Points": pdk.Layer(
+            "ScatterplotLayer",
+            data=[],  # Initially empty data
+            get_position=["lon", "lat"],
+            get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
+            get_radius=50,
+        ),
     }
 
     mapstyle = st.sidebar.selectbox(
@@ -30,46 +36,57 @@ def mapping_demo():
 
     st.sidebar.markdown("### Map Layers")
     selected_layers = [
-        layer_name
-        for layer_name in ALL_LAYERS.keys()
+        layer
+        for layer_name, layer in ALL_LAYERS.items()
         if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")  # Add a unique key
     ]
+    if selected_layers:
+        map_component = st.pydeck_chart(
+            pdk.Deck(
+                map_style=f"{mapstyle}",
+                initial_view_state={
+                    "latitude": 10.068393,
+                    "longitude": 76.593363,
+                    "zoom": 15,
+                    "pitch": 50,
+                },
+                layers=selected_layers,
+            )
+        )
+    else:
+        map_component = st.error("Please choose at least one layer above.")
 
     try:
         while True:
-            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json?token=$(date +%s)")
-            st.write(json_content)
+            json_content = fetch_json_from_github("https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/gps_temp.json")
             if json_content:
                 filtered_data = pd.DataFrame(json_content)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
-
-                ALL_LAYERS["Points"] = pdk.Layer(
-                    "ScatterplotLayer",
-                    data=filtered_data,
-                    get_position=["lon", "lat"],
-                    get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
-                    get_radius=50,
-                )
-
-                if selected_layers:
-                    map_component = pdk.Deck(
-                        map_style=f"{mapstyle}",
-                        initial_view_state={
-                            "latitude": 10.068393,
-                            "longitude": 76.593363,
-                            "zoom": 15,
-                            "pitch": 50,
-                        },
-                        layers=[ALL_LAYERS[layer_name] for layer_name in selected_layers]
-                    )
-                    map_container.pydeck_chart(map_component)
-                else:
-                    map_container.error("Please choose at least one layer above.")
                 
-            time.sleep(10)  # Check for changes every 60 seconds
+                # Update map data
+                ALL_LAYERS["Points"].data = filtered_data.to_dict(orient="records")
+                
+                # Update the map component to reflect changes
+                map_component.deck_layers = [
+                    pdk.Layer(
+                        map_component.deck_layers[0].type,
+                        data=ALL_LAYERS["Points"].data,
+                        get_position=["lon", "lat"],
+                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
+                        get_radius=50,
+                    )
+                ]
+                
+            time.sleep(60)  # Check for changes every 60 seconds
+    except URLError as e:
+        st.error(
+            """
+            **This requires internet access.**
+            Connection error: %s
+        """
+            % e.reason
+        )
 
-    except requests.exceptions.RequestException as e:
-        st.error(f"Error: {e}")
 
 st.set_page_config(page_title="Mapping", page_icon="🌍")
 st.markdown("# Mapping")
