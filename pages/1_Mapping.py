@@ -85,6 +85,7 @@ def mapping_demo():
                 filtered_data = pd.DataFrame(parsed_json)
                 st.write(filtered_data)
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
+                st.write(filtered_data)
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
