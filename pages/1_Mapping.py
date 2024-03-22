@@ -74,7 +74,6 @@ def mapping_demo():
                 layers=selected_layers,
             )
         )
-        map_component.view()
 
     else:
         map_component = st.error("Please choose at least one layer above.")
@@ -91,7 +90,6 @@ def mapping_demo():
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
-                map_component.update()
 
             time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
