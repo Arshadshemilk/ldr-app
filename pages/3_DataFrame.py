@@ -54,7 +54,7 @@ def data_frame_demo():
         parsed_data = json.loads(json_data)
         filtered_data = pd.DataFrame(parsed_data)
         filtered_data = filtered_data.T.reset_index()
-        filtered_data = pd.meltfiltered_data, id_vars=["index"]).rename(
+        filtered_data = pd.melt(filtered_data, id_vars=["index"]).rename(
             columns={"index": "logitude", "latitude": "temperature"}
             )
         st.write(filtered_data)
