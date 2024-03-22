@@ -14,13 +14,20 @@ def fetch_json_from_github(url):
         return None
 
 def mapping_demo():
+    @st.cache_data
+    def from_data_file(filename):
+        url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
+        data = pd.read_json(url)
+        filtered_data = data[data['temp'] < 30]
+        return filtered_data
+
     # Create map and checkboxes outside the loop
     st.sidebar.info("Checking for changes in JSON file...")
 
     ALL_LAYERS = {
         "Points": pdk.Layer(
             "ScatterplotLayer",
-            data=[],  # Initially empty data
+            data=from_data_file("gps_temp.json"),  # Initially load the data
             get_position=["lon", "lat"],
             get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
             get_radius=50,
@@ -64,18 +71,7 @@ def mapping_demo():
                 filtered_data = filtered_data[filtered_data['temp'] < 30]
                 
                 # Update map data
-                ALL_LAYERS["Points"].data = filtered_data.to_dict(orient="records")
-                
-                # Update the map component to reflect changes
-                map_component.deck_layers = [
-                    pdk.Layer(
-                        map_component.deck_layers[0].type,
-                        data=ALL_LAYERS["Points"].data,
-                        get_position=["lon", "lat"],
-                        get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
-                        get_radius=50,
-                    )
-                ]
+                ALL_LAYERS["Points"].data = filtered_data
                 
             time.sleep(60)  # Check for changes every 60 seconds
     except URLError as e:
