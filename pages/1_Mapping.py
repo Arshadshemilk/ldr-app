@@ -41,13 +41,12 @@ def mapping_demo():
     ALL_LAYERS = {
         "Points": pdk.Layer(
             "ScatterplotLayer",
-            data=from_data_file("gps_temp.json"),  # Initially load the data
+            data=[],  # Initially load the data
             get_position=["lon", "lat"],
             get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
             get_radius=50,
         ),
-        r = pdk.Deck("Points", initial_view_state=viewport)
-    r.show()
+        
     }
     mapstyle = st.sidebar.selectbox(
         "Choose Map Style:",
@@ -75,6 +74,7 @@ def mapping_demo():
                 layers=selected_layers,
             )
         )
+
     else:
         map_component = st.error("Please choose at least one layer above.")
     try:
@@ -90,7 +90,7 @@ def mapping_demo():
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
-                r.update()
+                map_component.update()
 
             time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
