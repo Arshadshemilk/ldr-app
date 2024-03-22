@@ -45,7 +45,9 @@ def mapping_demo():
             get_position=["lon", "lat"],
             get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
             get_radius=50,
-        ),
+        )
+        r = pdk.Deck(scatterplot, initial_view_state=viewport)
+    r.show(),
     }
     mapstyle = st.sidebar.selectbox(
         "Choose Map Style:",
@@ -88,6 +90,7 @@ def mapping_demo():
 
                 # Update map data
                 ALL_LAYERS["Points"].data = filtered_data
+                r.update()
 
             time.sleep(5)  # Check for changes every 60 seconds
     except URLError as e:
