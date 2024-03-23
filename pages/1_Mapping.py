@@ -14,11 +14,11 @@ def fetch_github_json(repo_url, file_path, token):
         }
         api_url = f"https://api.github.com/repos/{repo_url}/contents/{file_path}"
         response = requests.get(api_url, headers=headers)
-        
+
         if response.status_code == 403:
             st.error("GitHub API rate limit exceeded. Please try again later.")
             return None
-        
+
         response.raise_for_status()  # Raise an exception for HTTP errors
         content = response.json()
         decoded_content = base64.b64decode(content['content']).decode('utf-8')
