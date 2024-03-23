@@ -6,7 +6,6 @@ import streamlit as st
 import time
 import base64
 import json
-from folium.plugins import AntPath
 
 def fetch_github_json(repo_url, file_path, token):
     try:
