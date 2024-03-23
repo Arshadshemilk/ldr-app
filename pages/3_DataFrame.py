@@ -16,6 +16,7 @@ from urllib.error import URLError
 
 import altair as alt
 import pandas as pd
+import requests
 import json
 import base64
 
