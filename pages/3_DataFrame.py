@@ -57,18 +57,8 @@ def data_frame_demo():
         filtered_data = filtered_data.T.reset_index()
         filtered_data = pd.melt(filtered_data, id_vars=["index"]).rename(
             columns={"index": "logitude", "latitude": "temperature"}
-            )
+        )
         st.write(filtered_data)
-            chart = (
-                alt.Chart(filtered_data)
-                .mark_area(opacity=0.3)
-                .encode(
-                    x="year:T",
-                    y=alt.Y("Gross Agricultural Product ($B):Q", stack=None),
-                    color="Region:N",
-                )
-            )
-            st.altair_chart(chart, use_container_width=True)
     except URLError as e:
         st.error(
             """
