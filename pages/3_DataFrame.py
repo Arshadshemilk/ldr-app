@@ -44,20 +44,15 @@ def fetch_github_json(repo_url, file_path, token):
 
 
 def data_frame_demo():
-    @st.cache_data
-
 
     try:
         token = "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"
         repo_url = "Arshadshemilk/ldr-data"
         file_path = "gps_temp.json"
         data = fetch_github_json(repo_url, file_path,token)
-        parsed_data = json.loads(json_data)
+        parsed_data = json.loads(data)
         filtered_data = pd.DataFrame(parsed_data)
-        filtered_data = filtered_data.T.reset_index()
-        filtered_data = pd.melt(filtered_data, id_vars=["index"]).rename(
-            columns={"index": "logitude", "latitude": "temperature"}
-        )
+        filtered_data.columns = ['   Longitude   ', '   Latitude   ', '   Temperature   ']
         st.write(filtered_data)
     except URLError as e:
         st.error(
