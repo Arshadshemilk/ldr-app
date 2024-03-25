@@ -103,4 +103,7 @@ def main():
     
 
 if __name__ == "__main__":
+    st.set_page_config(page_title="Mapping", page_icon="🌍")
+    st.markdown("# Mapping")
+    st.sidebar.header("Mapping")
     main()
