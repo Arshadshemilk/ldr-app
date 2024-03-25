@@ -1,11 +1,17 @@
-from urllib.error import URLError
-import requests
+import folium
+import geopandas as gpd
 import pandas as pd
-import pydeck as pdk
+import requests
 import streamlit as st
+from streamlit_folium import st_folium
 import time
 import base64
 import json
+from urllib.error import URLError
+
+
+if "markers" not in st.session_state:
+    st.session_state["markers"] = []
 
 def fetch_github_json(repo_url, file_path, token):
     try:
@@ -27,70 +33,63 @@ def fetch_github_json(repo_url, file_path, token):
         st.error(f"Failed to fetch JSON content from GitHub: {e}")
         return None
 
-def mapping_demo():
+def main():
     token = "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"
-    def from_data_file(filename):
-        url = "https://raw.githubusercontent.com/Arshadshemilk/ldr-data/main/%s" % filename
-        data = pd.read_json(url)
-        filtered_data = data[data['temp'] < 30]
-        return filtered_data
+    repo_url = "Arshadshemilk/ldr-data"
+    file_path = "gps_temp.json"
+    json_content = fetch_github_json(repo_url, file_path,token)
+    parsed_json = json.loads(json_content)
+    df = pd.DataFrame(parsed_json)
+    # Sample DataFrame with longitude, latitude, and temperature data
 
-    # Create map and checkboxes outside the loop
-    st.sidebar.info("Checking for changes in JSON file...")
-
-    ALL_LAYERS = {
-        "Points": pdk.Layer(
-            "ScatterplotLayer",
-            data=[],  # Initially load the data
-            get_position=["lon", "lat"],
-            get_color=[255, 0, 0, 160],  # Red color for temperature less than 30
-            get_radius=50,
-        ),
-        
-    }
-    mapstyle = st.sidebar.selectbox(
-        "Choose Map Style:",
-        options=["dark", "light", "road"],
-        format_func=str.capitalize,
-        key="mapstyle_selectbox"  # Add a unique key
+    START_LOCATION = [10.067921, 76.595418]
+    START_ZOOM = 15
+    
+    map = folium.Map(
+        location=START_LOCATION,
+        zoom_start=START_ZOOM,
+        tiles="OpenStreetMap",
+        max_zoom=30,
     )
+    for index, row in df.iterrows():
+        if row['temp'] < 30:
+            marker = folium.Marker([row['lat'], row['lon']], icon=folium.Icon(color='red'))
+            st.session_state["markers"].append(marker)
 
-    st.sidebar.markdown("### Map Layers")
-    selected_layers = [
-        layer
-        for layer_name, layer in ALL_LAYERS.items()
-        if st.sidebar.checkbox(layer_name, True, key=f"{layer_name}_checkbox")  # Add a unique key
-    ]
-    if selected_layers:
-        map_component = st.pydeck_chart(
-            pdk.Deck(
-                map_style=f"{mapstyle}",
-                initial_view_state={
-                    "latitude": 10.068393,
-                    "longitude": 76.593363,
-                    "zoom": 15,
-                    "pitch": 50,
-                },
-                layers=selected_layers,
-            )
-        )
-
-    else:
-        map_component = st.error("Please choose at least one layer above.")
+            # Add path between locations
+            coordinates = df[['lat', 'lon']].values.tolist()
+            folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
+    fg = folium.FeatureGroup(name="Markers")
+    for marker in st.session_state["markers"]:
+        fg.add_child(marker)
+    st_folium(
+        map,
+        key="new",
+        feature_group_to_add=fg,
+        height=700,
+        width=700,
+    )
+    
     try:
         while True:
+            token = "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"
             repo_url = "Arshadshemilk/ldr-data"
             file_path = "gps_temp.json"
             json_content = fetch_github_json(repo_url, file_path,token)
-            if json_content:
-                parsed_json = json.loads(json_content)
-                filtered_data = pd.DataFrame(parsed_json)
-                filtered_data = filtered_data[filtered_data['temp'] < 30]
+            parsed_json = json.loads(json_content)
+            df = pd.DataFrame(parsed_json)
+            tempe = df
+            comparison = df.equals(tempe)
+            if not comparison:
+                for index, row in df.iterrows():
+                    if row['temp'] < 30:
+                        marker = folium.Marker([row['lat'], row['lon']], icon=folium.Icon(color='red'))
+                        st.session_state["markers"].append(marker)
 
-                # Update map data
-                ALL_LAYERS["Points"].data = filtered_data
-
-            time.sleep(5)  # Check for changes every 60 seconds
+                    # Add path between locations
+                    coordinates = df[['lat', 'lon']].values.tolist()
+                    folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)           
+            time.sleep(1)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
@@ -100,8 +99,8 @@ def mapping_demo():
             % e.reason
         )
 
+    # Add markers based on temperature condition
+    
 
-st.set_page_config(page_title="Mapping", page_icon="🌍")
-st.markdown("# Mapping")
-st.sidebar.header("Mapping")
-mapping_demo()
+if __name__ == "__main__":
+    main()
