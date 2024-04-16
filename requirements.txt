@@ -6,3 +6,4 @@ streamlit
 geopandas
 folium
 streamlit_folium
+firebase_admin
