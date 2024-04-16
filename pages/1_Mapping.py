@@ -1,45 +1,35 @@
 import folium
 import geopandas as gpd
 import pandas as pd
-import requests
 import streamlit as st
 from streamlit_folium import st_folium
 import time
-import base64
-import json
 from urllib.error import URLError
+import firebase_admin
+from firebase_admin import credentials, db
 
 
 if "markers" not in st.session_state:
     st.session_state["markers"] = []
 
-def fetch_github_json(repo_url, file_path, token):
-    try:
-        headers = {
-            'Authorization': f'token {token}',
-        }
-        api_url = f"https://api.github.com/repos/{repo_url}/contents/{file_path}"
-        response = requests.get(api_url, headers=headers)
+# Check if Firebase app has already been initialized
+if not firebase_admin._apps:
+    # Initialize Firebase
+    cred = credentials.Certificate("ldr-ro-firebase-adminsdk-var6u-d008f4eb5b.json")
+    firebase_admin.initialize_app(cred, {
+        'databaseURL': 'https://ldr-ro-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    })
 
-        if response.status_code == 403:
-            st.error("GitHub API rate limit exceeded. Please try again later.")
-            return None
+# Function to read Firebase data and convert it to dataframe
 
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        content = response.json()
-        decoded_content = base64.b64decode(content['content']).decode('utf-8')
-        return decoded_content
-    except (requests.RequestException, KeyError) as e:
-        st.error(f"Failed to fetch JSON content from GitHub: {e}")
-        return None
+def read_firebase_data():
+    ref = db.reference('/')  # Reference to the root of your Firebase database
+    data = ref.get()  # Fetch data
+    df = pd.DataFrame.from_dict(data, orient='index')
+    return df
 
 def main():
-    token = "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"
-    repo_url = "Arshadshemilk/ldr-data"
-    file_path = "gps_temp.json"
-    json_content = fetch_github_json(repo_url, file_path,token)
-    parsed_json = json.loads(json_content)
-    df = pd.DataFrame(parsed_json)
+    df = read_firebase_data()
     # Sample DataFrame with longitude, latitude, and temperature data
 
     START_LOCATION = [10.067921, 76.595418]
@@ -52,12 +42,12 @@ def main():
         max_zoom=30,
     )
     for index, row in df.iterrows():
-        if row['temp'] < 30:
-            marker = folium.Marker([row['lat'], row['lon']], icon=folium.Icon(color='red'))
+        if row['temperature'] < 30:
+            marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
             st.session_state["markers"].append(marker)
 
             # Add path between locations
-            coordinates = df[['lat', 'lon']].values.tolist()
+            coordinates = df[['latitude', 'longitude']].values.tolist()
             folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
     fg = folium.FeatureGroup(name="Markers")
     for marker in st.session_state["markers"]:
@@ -72,13 +62,7 @@ def main():
     
     try:
         while True:
-            token = "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"
-            repo_url = "Arshadshemilk/ldr-data"
-            file_path = "gps_temp.json"
-            json_content = fetch_github_json(repo_url, file_path,token)
-            parsed_json = json.loads(json_content)
-            df = pd.DataFrame(parsed_json)
-            tempe = df
+            df = read_firebase_data()
             comparison = df.equals(tempe)
             if not comparison:
                 for index, row in df.iterrows():
@@ -89,7 +73,8 @@ def main():
                     # Add path between locations
                     coordinates = df[['lat', 'lon']].values.tolist()
                     folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)           
-            time.sleep(1)  # Check for changes every 60 seconds
+            tempe = df
+            time.sleep(3)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
