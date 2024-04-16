@@ -75,7 +75,7 @@ def main():
                     coordinates = df[['latitude', 'logitude']].values.tolist()
                     folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)           
             tempe = df
-            time.sleep(3)  # Check for changes every 60 seconds
+            time.sleep(1)  # Check for changes every 60 seconds
     except URLError as e:
         st.error(
             """
