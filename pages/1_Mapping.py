@@ -43,11 +43,11 @@ def main():
     )
     for index, row in df.iterrows():
         if row['temperature'] < 30:
-            marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
+            marker = folium.Marker([row['latitude'], row['logitude']], icon=folium.Icon(color='red'))
             st.session_state["markers"].append(marker)
 
             # Add path between locations
-            coordinates = df[['latitude', 'longitude']].values.tolist()
+            coordinates = df[['latitude', 'logitude']].values.tolist()
             folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
     fg = folium.FeatureGroup(name="Markers")
     for marker in st.session_state["markers"]:
@@ -67,11 +67,11 @@ def main():
             if not comparison:
                 for index, row in df.iterrows():
                     if row['temperature'] < 30:
-                        marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
+                        marker = folium.Marker([row['latitude'], row['logitude']], icon=folium.Icon(color='red'))
                         st.session_state["markers"].append(marker)
 
                     # Add path between locations
-                    coordinates = df[['latitude', 'longitude']].values.tolist()
+                    coordinates = df[['latitude', 'logitude']].values.tolist()
                     folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)           
             tempe = df
             time.sleep(3)  # Check for changes every 60 seconds
