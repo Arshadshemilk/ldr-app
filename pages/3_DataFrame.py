@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, db
 import pandas as pd
@@ -19,7 +19,7 @@ import pandas as pd
 # Check if Firebase app has already been initialized
 if not firebase_admin._apps:
     # Initialize Firebase
-    cred = credentials.Certificate("ldr-ro-firebase-adminsdk-var6u-d008f4eb5b.json")
+    cred = credentials.Certificate("pages/ldr-ro-firebase-adminsdk-var6u-d008f4eb5b.json")
     firebase_admin.initialize_app(cred, {
         'databaseURL': 'https://ldr-ro-default-rtdb.asia-southeast1.firebasedatabase.app/'
     })
