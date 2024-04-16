@@ -30,6 +30,7 @@ def read_firebase_data():
 
 def main():
     df = read_firebase_data()
+    tempe = df
     # Sample DataFrame with longitude, latitude, and temperature data
 
     START_LOCATION = [10.067921, 76.595418]
