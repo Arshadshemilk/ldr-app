@@ -43,7 +43,7 @@ def main():
         max_zoom=30,
     )
     for index, row in df.iterrows():
-        coordinates = df[['latitude', 'logitude']].values.tolist()
+        coordinates = df[['latitude', 'longitude']].values.tolist()
         folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
         if row['temperature'] < 30:
             marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
@@ -64,14 +64,15 @@ def main():
             df = read_firebase_data()
             comparison = df.equals(tempe)
             if not comparison:
+                coordinates = df[['latitude', 'longitude']].values.tolist()
+                folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
                 for index, row in df.iterrows():
                     if row['temperature'] < 30:
                         marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
                         st.session_state["markers"].append(marker)
 
                     # Add path between locations
-                    coordinates = df[['latitude', 'logitude']].values.tolist()
-                    folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)           
+                               
             tempe = df
             time.sleep(1)  # Check for changes every 60 seconds
     except URLError as e:
