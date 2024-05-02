@@ -45,7 +45,7 @@ def main():
     for index, row in df.iterrows():
         coordinates = df[['latitude', 'longitude']].values.tolist()
         folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
-        if row['temperature'] > 30:
+        if row['temperature'] > 34:
             marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
             st.session_state["markers"].append(marker)
     fg = folium.FeatureGroup(name="Markers")
@@ -67,7 +67,7 @@ def main():
                 coordinates = df[['latitude', 'longitude']].values.tolist()
                 folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
                 for index, row in df.iterrows():
-                    if row['temperature'] > 30:
+                    if row['temperature'] > 34:
                         marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
                         st.session_state["markers"].append(marker)
 
