@@ -26,6 +26,7 @@ if not firebase_admin._apps:
 
 # Function to read Firebase data and convert it to dataframe
 def read_firebase_data():
+    
     ref = db.reference('/hi')  # Reference to the root of your Firebase database
     data = ref.get()  # Fetch data
     df = pd.DataFrame.from_dict(data, orient='index')
@@ -34,7 +35,7 @@ def read_firebase_data():
 def data_frame_demo():
 
     # Read and display data
-    data = read_firebase_data()
+    data = read_firebase_data(text_input)
     st.write('Raw Data:')
     st.write(data)
 
@@ -43,6 +44,12 @@ st.set_page_config(page_title="DataFrame", page_icon="📊")
 st.markdown("# DataFrame")
 st.sidebar.header("DataFrame")
 text_input = st.text_input("Enter Field Name / User Name")
+if st.button("Get"):
+    # Print the value entered in the textbox when the button is clicked
+    if text_input:
+        st.write("You entered:", text_input)
+    else:
+        st.write("Please enter a name")
 
 data_frame_demo()
 
