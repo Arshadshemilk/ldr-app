@@ -26,7 +26,7 @@ if not firebase_admin._apps:
 
 # Function to read Firebase data and convert it to dataframe
 def read_firebase_data():
-    ref = db.reference('/')  # Reference to the root of your Firebase database
+    ref = db.reference('/hi')  # Reference to the root of your Firebase database
     data = ref.get()  # Fetch data
     df = pd.DataFrame.from_dict(data, orient='index')
     return df
