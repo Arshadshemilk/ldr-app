@@ -100,6 +100,6 @@ if __name__ == "__main__":
         # Print the value entered in the textbox when the button is clicked
         if text_input:
             st.write("You entered:", text_input)
+            main()
         else:
             st.write("Please enter a name")
-    main()
