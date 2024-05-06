@@ -97,9 +97,9 @@ if __name__ == "__main__":
     st.sidebar.header("Mapping")
     text_input = st.text_input("Enter Field Name / User Name")
     if st.button("Get"):
+        main()
         # Print the value entered in the textbox when the button is clicked
         if text_input:
             st.write("You entered:", text_input)
-            main()
         else:
             st.write("Please enter a name")
