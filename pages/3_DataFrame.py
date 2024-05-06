@@ -42,6 +42,7 @@ def data_frame_demo():
 st.set_page_config(page_title="DataFrame", page_icon="📊")
 st.markdown("# DataFrame")
 st.sidebar.header("DataFrame")
+text_input = st.text_input("Enter Field Name / User Name")
 
 data_frame_demo()
 
