@@ -26,11 +26,14 @@ if not firebase_admin._apps:
 
 # Function to read Firebase data and convert it to dataframe
 def read_firebase_data():
-    path = "/" + text_input
-    ref = db.reference(path)  # Reference to the root of your Firebase database
-    data = ref.get()  # Fetch data
-    df = pd.DataFrame.from_dict(data, orient='index')
-    return df
+    if(text_input):
+        path = "/" + text_input
+        ref = db.reference(path)  # Reference to the root of your Firebase database
+        data = ref.get()  # Fetch data
+        df = pd.DataFrame.from_dict(data, orient='index')
+        return df
+    else:
+        st.write("Please enter a input")
 
 def data_frame_demo():
 
