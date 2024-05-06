@@ -35,7 +35,7 @@ def read_firebase_data():
 def data_frame_demo():
 
     # Read and display data
-    data = read_firebase_data(text_input)
+    data = read_firebase_data()
     st.write('Raw Data:')
     st.write(data)
 
