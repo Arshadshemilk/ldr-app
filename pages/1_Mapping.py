@@ -23,10 +23,14 @@ if not firebase_admin._apps:
 # Function to read Firebase data and convert it to dataframe
 
 def read_firebase_data():
-    ref = db.reference('/')  # Reference to the root of your Firebase database
-    data = ref.get()  # Fetch data
-    df = pd.DataFrame.from_dict(data, orient='index')
-    return df
+    if(text_input):
+        path = "/" + text_input
+        ref = db.reference(path)  # Reference to the root of your Firebase database
+        data = ref.get()  # Fetch data
+        df = pd.DataFrame.from_dict(data, orient='index')
+        return df
+    else:
+        st.write("Please enter a input")
 
 def main():
     df = read_firebase_data()
@@ -91,4 +95,11 @@ if __name__ == "__main__":
     st.set_page_config(page_title="Mapping", page_icon="🌍")
     st.markdown("# Mapping")
     st.sidebar.header("Mapping")
+    text_input = st.text_input("Enter Field Name / User Name")
+    if st.button("Get"):
+        # Print the value entered in the textbox when the button is clicked
+        if text_input:
+            st.write("You entered:", text_input)
+        else:
+            st.write("Please enter a name")
     main()
