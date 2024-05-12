@@ -17,7 +17,7 @@ if not firebase_admin._apps:
     # Initialize Firebase
     cred = credentials.Certificate("pages/ldr-ro-firebase-adminsdk-var6u-d008f4eb5b.json")
     firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://ldr-ro-default-rtdb.asia-southeast1.firebasedatabase.app/'
+        'databaseURL': 'https://ldr-robot-default-rtdb.asia-southeast1.firebasedatabase.app/'
     })
 
 # Function to read Firebase data and convert it to dataframe
