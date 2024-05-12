@@ -63,7 +63,7 @@ def main():
             height=700,
             width=700,
         )
-    except AttributeError,TypeError:
+    except (AttributeError, TypeError):
         st.write("Field / User name not found!!!")
         return None
     
