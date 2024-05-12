@@ -30,7 +30,7 @@ def read_firebase_data():
         df = pd.DataFrame.from_dict(data, orient='index')
         return df
     else:
-        st.write("Please enter a input")
+        st.write(" ")
 
 def main():
     try:
@@ -63,7 +63,8 @@ def main():
             height=700,
             width=700,
         )
-    except AttributeError:
+    except AttributeError,TypeError:
+        st.write("Field / User name not found!!!")
         return None
     
     try:
