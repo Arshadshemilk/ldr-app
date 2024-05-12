@@ -33,35 +33,38 @@ def read_firebase_data():
         st.write("Please enter a input")
 
 def main():
-    df = read_firebase_data()
-    tempe = df
-    # Sample DataFrame with longitude, latitude, and temperature data
-
-    START_LOCATION = [10.067921, 76.595418]
-    START_ZOOM = 15
+    try:
+        df = read_firebase_data()
+        tempe = df
+        # Sample DataFrame with longitude, latitude, and temperature data
     
-    map = folium.Map(
-        location=START_LOCATION,
-        zoom_start=START_ZOOM,
-        tiles="OpenStreetMap",
-        max_zoom=30,
-    )
-    for index, row in df.iterrows():
-        coordinates = df[['latitude', 'longitude']].values.tolist()
-        folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
-        if row['temperature'] > 34:
-            marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
-            st.session_state["markers"].append(marker)
-    fg = folium.FeatureGroup(name="Markers")
-    for marker in st.session_state["markers"]:
-        fg.add_child(marker)
-    st_folium(
-        map,
-        key="new",
-        feature_group_to_add=fg,
-        height=700,
-        width=700,
-    )
+        START_LOCATION = [10.067921, 76.595418]
+        START_ZOOM = 15
+        
+        map = folium.Map(
+            location=START_LOCATION,
+            zoom_start=START_ZOOM,
+            tiles="OpenStreetMap",
+            max_zoom=30,
+        )
+        for index, row in df.iterrows():
+            coordinates = df[['latitude', 'longitude']].values.tolist()
+            folium.PolyLine(locations=coordinates, color="blue", weight=2.5, opacity=1).add_to(map)
+            if row['temperature'] > 34:
+                marker = folium.Marker([row['latitude'], row['longitude']], icon=folium.Icon(color='red'))
+                st.session_state["markers"].append(marker)
+        fg = folium.FeatureGroup(name="Markers")
+        for marker in st.session_state["markers"]:
+            fg.add_child(marker)
+        st_folium(
+            map,
+            key="new",
+            feature_group_to_add=fg,
+            height=700,
+            width=700,
+        )
+    except AttributeError:
+        return None
     
     try:
         while True:
